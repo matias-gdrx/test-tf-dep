@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+# Terraform - one entry per path we want to scan until this is available: https://github.com/dependabot/dependabot-core/issues/649
+  - package-ecosystem: "terraform"
+    directory: "/accounts/dev"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "terraform"
+    directory: "/apps/one"
+    open-pull-requests-limit: 5
+    schedule:
+      interval: "daily"
