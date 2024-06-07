@@ -19,7 +19,7 @@ module "s3_bucket" {
 
 module "rds" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "6.2.0"
+  version = "9.4.0"
 
   name = "myrdsdb"
 }
