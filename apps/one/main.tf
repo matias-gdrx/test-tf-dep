@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
-  version = "5.7.0"
+  version = "5.8.1"
 
   name = "my-vpc-test-tf"
   cidr = "10.0.0.0/16"
