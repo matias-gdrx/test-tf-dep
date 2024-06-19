@@ -1,0 +1,61 @@
+name: Test self-hosted runners
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get short commit hash
+        id: get_short_commit_hash
+        shell: bash
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.11.0
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Test Cache
+        uses: actions/cache@v4
+        with:
+          path: prime-numbers
+          key: ${{ runner.os }}-primes
+
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials from grxdev account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: us-west-2
+
+      - name: List buckets
+        run: |
+          aws s3 ls
+
+      - name: Install Turbo
+        shell: bash
+        run: npm install turbo@1.13.3 --global
